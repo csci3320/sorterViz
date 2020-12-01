@@ -57,16 +57,22 @@
     </div>
     <div class="card">
       <canvas id="canv0"></canvas>
-      <canvas id="canv1"></canvas>
+      <canvas id="canv1" width=0></canvas>
     </div>
     <div class="card">
       <div>Comparisons: <span id="steps"></span></div>
       <div>
-        <button onclick="reset()">Reset</button>
+        Reset:
+        <button onclick="resetInOrder()">In Order</button>
+        <button onclick="resetRandom()">Random</button>
+        <button onclick="resetReverse()">Reverse</button>
+      </div>
+      <div>
         <button onclick="play()">Play</button>
         <button onclick="pause()">Pause</button>
         <button onclick="step()">Step</button>
       </div>
+      
     </div>
   </div>
 
@@ -121,8 +127,22 @@
       stepping = true;
     }
 
-    function reset() {
-      resetValues();
+    function resetInOrder() {
+      reset("InOrder");
+    }
+
+    function resetRandom() {
+      reset("Random");
+    }
+
+    function resetReverse() {
+      reset("Reverse");
+    }
+
+   
+
+    function reset(method) {
+      resetValues(method);
       updateSteps();
       drawCanvases();
     }
@@ -132,7 +152,7 @@
     }
 
     //Boot or reboot the sorter
-    function resetValues() {
+    function resetValues(method) {
       compare1s = [];
       compare2s = [];
       compare1Values = [];
@@ -152,8 +172,13 @@
         allValues.push(values);
         for (let i = 0; i < size; i++) {
           //values[i] = 50 - i;
-          //values[i] = reverseOrder[i];
-          values[i] = randomSequence[i];
+          if (method == "InOrder")
+            values[i] = inOrder[i];
+          if (method == "Random")
+            values[i] = randomSequence[i];
+          if (method == "Reverse")
+            values[i] = reverseOrder[i];
+          //values[i] = randomSequence[i];
         }
 
         if (d == 0)
@@ -164,12 +189,13 @@
         stepsCounters[d] = 0;
       }
       steps = 0;
+      timerID = setTimeout(tick, 0);
     }
 
 
 
     function main() {
-      resetValues();
+      resetValues("Random");
       for (let i = 0; i < sorterCount; i++) {
         canvases[i] = document.getElementById("canv" + i);
         canvases[i].style.width = scaled + margin + padding + "px"
@@ -177,7 +203,7 @@
         canvases[i].width = scaled + margin + padding;
         canvases[i].height = scaled + margin + padding;
       }
-      timerID = setTimeout(tick, 0);
+      //timerID = setTimeout(tick, 0);
     }
 
     function tick() {
