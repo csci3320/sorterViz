@@ -45,7 +45,7 @@
   </style>
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
-
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
 
 </head>
 
@@ -78,6 +78,17 @@
     let margin = 50;
     let padding = 10;
     let allValues = [];
+
+    let randomSequence = [];
+    let reverseOrder = [];
+    let inOrder = [];
+    for (let i = 0; i < size; i++) {
+      randomSequence[i] = i;
+      reverseOrder[i] = size - i - 1;
+      inOrder[i] = i;
+    }
+
+    randomSequence = _.shuffle(randomSequence);
 
     //let sorter = sort();
     let compare1s = [];
@@ -140,8 +151,11 @@
         values = [];
         allValues.push(values);
         for (let i = 0; i < size; i++) {
-          values[i] = 50 - i;
+          //values[i] = 50 - i;
+          //values[i] = reverseOrder[i];
+          values[i] = randomSequence[i];
         }
+
         if (d == 0)
           sorters[d] = sort0(values);
         else if (d == 1)
@@ -203,10 +217,11 @@
     function* sort0(values) {
       for (let i = 0; i < size; i++) {
         for (let j = 0; j < size - 1; j++) {
+          //For visualization onle
+          compare1Values[0] = values[j];
+          compare2Values[0] = values[j + 1];
           if (values[j + 1] < values[j]) {
-            //For visualization onle
-            compare1Value = values[j];
-            compare2Value = values[j + 1];
+
 
             //Actual Bubble Sort
             let temp = values[j + 1];
@@ -221,10 +236,11 @@
     function* sort1(values) {
       for (let i = 0; i < size; i++) {
         for (let j = 0; j < size - 1 - i; j++) {
+          //For visualization onle
+          compare1Values[1] = values[j];
+          compare2Values[1] = values[j + 1];
           if (values[j + 1] < values[j]) {
-            //For visualization onle
-            compare1Value = values[j];
-            compare2Value = values[j + 1];
+
 
             //Actual Bubble Sort
             let temp = values[j + 1];
@@ -305,12 +321,11 @@
           for (let i = 0; i <= size; i++) {
             if (i % tickStep == 0) {
               ctx.beginPath()
-              ctx.moveTo(2 * margin / 3, i * scale,)
-              ctx.lineTo(margin, i * scale)
+              ctx.moveTo(2 * margin / 3, scaled - i * scale,)
+              ctx.lineTo(margin, scaled - i * scale)
               ctx.stroke();
-              let string = "" + (50 - i);
-              let height = ctx.measureText(string).height
-              ctx.fillText(string, margin / 3, i * scale + fontSize / 2)
+              let string = "" + (i);
+              ctx.fillText(string, margin / 3, scaled - i * scale + fontSize / 2)
             }
           }
         }
