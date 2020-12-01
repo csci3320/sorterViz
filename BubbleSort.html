@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Canvas</title>
+  <style>
+    html {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Roboto', sans-serif;
+      text-align: center;
+      height: 100%;
+      background-color: black;
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+
+    }
+
+    .card {
+      box-shadow: 0 4px 5px -2px rgba(0, 0, 0, .2), 0 7px 10px 1px rgba(0, 0, 0, .14), 0 2px 16px 1px rgba(0, 0, 0, .12) !important;
+      margin: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid rgb(255, 255, 255, .12);
+      color: white;
+      width: 40%;
+      background-color: rgb(30, 30, 30);
+    }
+
+    .big {
+      font-size: 3rem;
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+
+
+</head>
+
+<body onload="main()">
+
+  <div class="main">
+    <div class="card big">
+      Bubble Sort
+    </div>
+    <div class="card">
+      <canvas id="canv"></canvas>
+    </div>
+    <div class="card">
+      <div>Comparisons: <span id="steps"></span></div>
+      <div>
+        <button onclick="reset()">Reset</button>
+        <button onclick="play()">Play</button>
+        <button onclick="pause()">Pause</button>
+        <button onclick="step()">Step</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+
+    const size = 51;
+    let scale = 8;
+    let scaled = size * scale;
+    let margin = 50;
+    let padding = 10;
+    let values;
+
+    let sorter = sort();
+    let done = false;
+    let steps = 0;
+    let compare1 = -1;
+    let compare2 = -1;
+    let compare1Value;
+    let compare2Value;
+    let tickStep = 5;
+    let fontSize = margin / 4;
+    let playing = false;
+    let stepping = false;
+
+    //Controls
+    function play() {
+      playing = true;
+    }
+
+    function pause() {
+      playing = false;
+    }
+
+    function step() {
+      playing = true;
+      stepping = true;
+    }
+
+    function reset() {
+      resetValues();
+      updateSteps();
+      drawCanvas();
+    }
+
+    function updateSteps() {
+      document.getElementById("steps").innerText = steps;
+    }
+
+    //Boot or reboot the sorter
+    function resetValues() {
+      compare1 = -1;
+      compare2 = -1;
+
+      values = [];
+      for (let i = 0; i < size; i++) {
+        values[i] = 50 - i;
+      }
+      sorter = sort();
+      steps = 0;
+    }
+
+
+
+    function main() {
+      resetValues();
+      canvas = document.getElementById("canv");
+      canvas.style.width = scaled + margin + padding + "px"
+      canvas.style.height = scaled + margin + padding + "px"
+      canvas.width = scaled + margin + padding;
+      canvas.height = scaled + margin + padding;
+      timerID = setTimeout(tick, 0);
+    }
+
+    function tick() {
+      drawCanvas();
+      if (!playing) return setTimeout(tick, 0);
+      if (stepping) {
+        playing = false;
+        stepping = false;
+      }
+      let result = sorter.next();
+
+      if (result.done) {
+        done = true;
+        compare1 = -1;
+        compare2 = -1;
+      }
+      else {
+        compare1 = result.value[0];
+        compare2 = result.value[1];
+      }
+      if (!done) {
+        timerID = setTimeout(tick, 0);
+        steps++;
+        updateSteps();
+      }
+      else
+        drawCanvas();
+    }
+
+
+
+    function* sort() {
+      for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size - 1 - i; j++) {
+          if (values[j + 1] < values[j]) {
+            //For visualization onle
+            compare1Value = values[j];
+            compare2Value = values[j + 1];
+
+            //Actual Bubble Sort
+            let temp = values[j + 1];
+            values[j + 1] = values[j];
+            values[j] = temp;
+          }
+          yield [j, j + 1];
+        }
+      }
+    }
+
+    function drawCanvas() {
+      var ctx = canvas.getContext("2d");
+      ctx.font = fontSize + "px roboto";
+
+      //Choose a background color based on whether or not we are done.
+      if (!done)
+        ctx.fillStyle = "lightgray";
+      else
+        ctx.fillStyle = "#EEEEEE"
+
+      //Clear the background
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.save()
+      ctx.translate(0, padding);
+
+      //Draw the axes
+      ctx.strokeStyle = "black";
+      ctx.fillStyle = "black";
+      ctx.beginPath();
+      ctx.moveTo(margin, 0)
+      ctx.lineTo(margin, scaled)
+      ctx.moveTo(margin, scaled)
+      ctx.lineTo(scaled + margin, scaled)
+      ctx.stroke();
+
+      //Draw the tick marks
+      //x axis
+      for (let i = 0; i <= size; i++) {
+        if (i % tickStep == 0) {
+          ctx.beginPath()
+          ctx.moveTo(margin + i * scale, scaled)
+          ctx.lineTo(margin + i * scale, scaled + margin / 3)
+          ctx.stroke();
+          let string = "" + i;
+          let width = ctx.measureText(string).width
+          ctx.fillText(string, margin + i * scale - width / 2, scaled + margin * 2 / 3)
+        }
+      }
+
+      //x axis caption
+      let width = ctx.measureText("Index").width;
+      ctx.fillText("Index", margin + scaled / 2 - width / 2, scaled + 2 * margin / 2 - 4);
+
+      //y axis caption
+      ctx.save();
+      ctx.rotate(-Math.PI / 2);
+      ctx.translate(-scaled / 2, 0)
+      ctx.fillStyle = "black"
+      let w = ctx.measureText("Value").width;
+      ctx.fillText("Value", -w / 2, fontSize);
+      ctx.restore();
+
+      //y axis
+      for (let i = 0; i <= size; i++) {
+        if (i % tickStep == 0) {
+          ctx.beginPath()
+          ctx.moveTo(2 * margin / 3, i * scale,)
+          ctx.lineTo(margin, i * scale)
+          ctx.stroke();
+          let string = "" + (50 - i);
+          let height = ctx.measureText(string).height
+          ctx.fillText(string, margin / 3, i * scale + fontSize / 2)
+        }
+      }
+
+      ctx.restore();
+
+      ctx.save();
+      ctx.scale(1, -1);
+      ctx.translate(0, -(size * scale))
+      ctx.translate(0, 0) //Because we center circles
+      ctx.translate(margin, 0)
+      ctx.translate(0, -padding);
+
+      //Draw the current Values
+      for (let i = 0; i < size; i++) {
+        ctx.fillStyle = "rgb(" + (i / size * 255) + ", 255, 255)";
+        ctx.strokeStyle = "black";
+        ctx.beginPath();
+        ctx.ellipse(i * scale, (values[i]) * scale, scale / 2, scale / 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      //Now draw where we are comparing
+      if (compare1 != -1) {
+        //Draw the old values
+        ctx.fillStyle = "rgba(255, 255, 255, .9)";
+        ctx.strokeStyle = "white";
+        ctx.beginPath();
+        ctx.ellipse(compare1 * scale, (compare1Value) * scale, scale / 2, scale / 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath()
+        ctx.ellipse(compare2 * scale, (compare2Value) * scale, scale / 2, scale / 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        //Draw the comparison indexes
+        ctx.strokeStyle = "red";
+        ctx.beginPath()
+        ctx.moveTo(compare1 * scale, 0);
+        ctx.lineTo(compare1 * scale, scaled);
+        ctx.stroke();
+        ctx.beginPath()
+        ctx.moveTo(compare2 * scale, 0);
+        ctx.lineTo(compare2 * scale, scaled);
+        ctx.stroke();
+      }
+      ctx.restore()
+
+    }
+  </script>
+</body>
+
+</html>
