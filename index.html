@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>Canvas</title>
+  <title>Sorting Comparison</title>
   <style>
 
   </style>
@@ -29,13 +29,13 @@
         Starting Data
       </div class="stack">
       <div>
-      <button onclick="resetInOrder()">In Order <span class="iconify" data-icon="si-glyph:arrow-thin-right-top"
-          data-inline="false"></span></button>
-      <button onclick="resetRandom()">Random <span class="iconify" data-icon="fa-solid:random"
-          data-inline="false"></span></button>
-      <button onclick="resetReverse()">Reverse <span class="iconify" data-icon="si-glyph:arrow-thin-right-bottom"
-          data-inline="false"></span></button>
-        </div>
+        <button onclick="resetInOrder()">In Order <span class="iconify" data-icon="si-glyph:arrow-thin-right-top"
+            data-inline="false"></span></button>
+        <button onclick="resetRandom()">Random <span class="iconify" data-icon="fa-solid:random"
+            data-inline="false"></span></button>
+        <button onclick="resetReverse()">Reverse <span class="iconify" data-icon="si-glyph:arrow-thin-right-bottom"
+            data-inline="false"></span></button>
+      </div>
     </div>
     <div class="card">
       <div>
@@ -48,7 +48,11 @@
     </div>
   </div>
 
-  <script type="text/javascript">
+
+  <script type="module">
+    import BubbleSlow from "./BubbleSlow.js"
+    import BubbleFast from "./BubbleFast.js"
+    //let a = new BubbleSlow();
 
     const size = 51;
     let scale = 8;
@@ -68,46 +72,41 @@
 
     randomSequence = _.shuffle(randomSequence);
 
-    //let sorter = sort();
-    let compare1s = [];
-    let compare2s = [];
-    let compare1Values = [];
-    let compare2Values = [];
+
     let tickStep = 5;
     let fontSize = margin / 4;
     let playing = false;
     let stepping = false;
 
-    let sorterCount = 1;
+    let sorterCount = 2;
     let sorters = [];
+    let generators = [];
     let canvases = [];
-    let dones = [];
-    let stepsCounters = [];
-    let names = ["Bubble Sort", "Bubble Short"]
+
 
     //Controls
-    function play() {
+    window.play = function () {
       playing = true;
     }
 
-    function pause() {
+    window.pause = function () {
       playing = false;
     }
 
-    function step() {
+    window.step = function () {
       playing = true;
       stepping = true;
     }
 
-    function resetInOrder() {
+    window.resetInOrder = function () {
       reset("InOrder");
     }
 
-    function resetRandom() {
+    window.resetRandom = function () {
       reset("Random");
     }
 
-    function resetReverse() {
+    window.resetReverse = function () {
       reset("Reverse");
     }
 
@@ -118,28 +117,25 @@
       drawCanvases();
     }
 
-    
+
 
     //Boot or reboot the sorter
     function resetValues(method) {
-      compare1s = [];
-      compare2s = [];
-      compare1Values = [];
-      compare2Values = [];
-      dones = [];
-      stepsCounters = [];
+
+      //dones = [];
+      //stepsCounters = [];
 
       playing = false;
 
 
 
       allValues = [];
+      sorters = [];
+
+      generators = [];
       for (let d = 0; d < sorterCount; d++) {
-        compare1s.push(-1);
-        compare2s.push(-1);
-        compare1Values.push(-1);
-        compare2Values.push(-1);
-        values = [];
+
+        let values = [];
         allValues.push(values);
         for (let i = 0; i < size; i++) {
           //values[i] = 50 - i;
@@ -151,21 +147,25 @@
             values[i] = reverseOrder[i];
           //values[i] = randomSequence[i];
         }
+        //dones[d] = false;
+        //stepsCounters[d] = 0;
 
         if (d == 0)
-          sorters[d] = sort0(values);
-        else if (d == 1)
-          sorters[d] = sort1(values);
-        dones[d] = false;
-        stepsCounters[d] = 0;
+          sorters.push(new BubbleSlow(values))
+        if (d == 1)
+          sorters.push(new BubbleFast(values));
+        if (d == 1)
+          sorters.push(new BubbleFast(values));
+
+        generators.push(sorters[d].sort());
       }
-      steps = 0;
-      timerID = setTimeout(tick, 0);
+      let steps = 0;
+      let timerID = setTimeout(tick, 0);
     }
 
 
 
-    function main() {
+    window.main = function () {
       resetValues("Random");
       for (let i = 0; i < sorterCount; i++) {
         canvases[i] = document.getElementById("canv" + i);
@@ -174,7 +174,6 @@
         canvases[i].width = scaled + margin + padding;
         canvases[i].height = scaled + margin + padding;
       }
-      //timerID = setTimeout(tick, 0);
     }
 
     function tick() {
@@ -186,24 +185,15 @@
       }
 
       for (let d = 0; d < sorterCount; d++) {
-        let sorter = sorters[d];
-        let result = sorter.next();
-
-        if (result.done) {
-          dones[d] = true;
-          compare1s[d] = -1;
-          compare2s[d] = -1;
-        }
-        else {
-          stepsCounters[d]++;
-
-          compare1s[d] = result.value[0];
-          compare2s[d] = result.value[1];
-        }
+        let result = generators[d].next();
       }
-      if (dones.some(x => x == false)) {
-        timerID = setTimeout(tick, 0);
-        
+      let cont = false;
+      for (let sorter of sorters) {
+        if (!sorter.done)
+          cont = true;
+      }
+      if (cont) {
+        setTimeout(tick, 0);
       }
       else
         drawCanvases();
@@ -252,12 +242,20 @@
     function drawCanvases() {
       for (let d = 0; d < sorterCount; d++) {
         let canvas = canvases[d];
-        let values = allValues[d];
-        let compare1 = compare1s[d];
-        let compare2 = compare2s[d];
-        let compare1Value = compare1Values[d];
-        let compare2Value = compare2Values[d];
-        let done = dones[d];
+        let sorter = sorters[d];
+        //let values = allValues[d];
+        let values = sorter.values;
+        let compare1 = -1;
+        let compare2 = -1;
+        let compare1Value = -1;
+        let compare2Value = -1;
+        if (sorter.state.length > 0) {
+          compare1 = sorter.state[0].index;//compare1s[d];
+          compare2 = sorter.state[1].index;
+          compare1Value = sorter.state[0].value;
+          compare2Value = sorter.state[1].value;
+        }
+        let done = sorters[d].done//dones[d];
 
         var ctx = canvas.getContext("2d");
         ctx.font = fontSize + "px roboto";
@@ -378,14 +376,14 @@
 
 
 
-        let title = names[d];
+        let title = sorter.name//names[d];
         ctx.font = "50px Roboto";
         ctx.fillStyle = "rgba(0,0,0,.3)";
         let titleWidth = ctx.measureText(title).width;
         ctx.fillText(title, (scaled + margin + padding) / 2 - titleWidth / 2, (scaled + padding + margin) / 2);
-        let stepString = "" + stepsCounters[d];
+        let stepString = "" + sorter.steps;
         let stepWidth = ctx.measureText(stepString).width;
-        ctx.fillText(stepString, (scaled + margin + padding) / 2 - stepWidth / 2, (scaled + padding + margin) / 2 + fontSize*3);
+        ctx.fillText(stepString, (scaled + margin + padding) / 2 - stepWidth / 2, (scaled + padding + margin) / 2 + fontSize * 3);
       }
     }
   </script>
