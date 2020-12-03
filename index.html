@@ -5,54 +5,23 @@
   <meta charset="utf-8" />
   <title>Canvas</title>
   <style>
-    html {
-      height: 100%;
-    }
 
-    body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      font-family: 'Roboto', sans-serif;
-      text-align: center;
-      height: 100%;
-      background-color: black;
-    }
-
-    .main {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
-
-    }
-
-    .card {
-      box-shadow: 0 4px 5px -2px rgba(0, 0, 0, .2), 0 7px 10px 1px rgba(0, 0, 0, .14), 0 2px 16px 1px rgba(0, 0, 0, .12) !important;
-      margin: 10px;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid rgb(255, 255, 255, .12);
-      color: white;
-
-      background-color: rgb(30, 30, 30);
-    }
-
-    .big {
-      font-size: 3rem;
-    }
   </style>
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
+  <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+  <script src="./libs/lodash.js"></script>
+  <link href="./styles/fonts.css" rel="stylesheet">
+  <link href="./styles/style.css" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="./styles/materialize.css">
+  <script src="./libs/materialize.js"></script> -->
+      
+
 
 </head>
 
 <body onload="main()">
 
   <div class="main">
-    <div class="card big">
+    <div class="big">
       Sorter Comparison
     </div>
     <div class="card">
@@ -60,19 +29,20 @@
       <canvas id="canv1" width=0></canvas>
     </div>
     <div class="card">
-      <div>Comparisons: <span id="steps"></span></div>
-      <div>
+      <div class="stack">Comparisons: <span id="steps"></span></div>
+      <div class="stack">
         Reset:
-        <button onclick="resetInOrder()">In Order</button>
-        <button onclick="resetRandom()">Random</button>
-        <button onclick="resetReverse()">Reverse</button>
+        <button onclick="resetInOrder()">In Order <span class="iconify" data-icon="si-glyph:arrow-thin-right-top" data-inline="false"></span></button>
+        <button onclick="resetRandom()">Random <span class="iconify" data-icon="fa-solid:random" data-inline="false"></span></button>
+        <button onclick="resetReverse()">Reverse <span class="iconify" data-icon="si-glyph:arrow-thin-right-bottom" data-inline="false"></span></button>
       </div>
-      <div>
-        <button onclick="play()">Play</button>
-        <button onclick="pause()">Pause</button>
-        <button onclick="step()">Step</button>
+      <div class="stack">
+        Controls:
+        <button onclick="play()">Play <span class="iconify" data-icon="fa:play"></span></button>
+        <button onclick="pause()">Pause <span class="iconify" data-icon="fa:pause"></span></button>
+        <button onclick="step()">Step <span class="iconify" data-icon="fa:step-forward"></span></button>
       </div>
-      
+
     </div>
   </div>
 
@@ -139,7 +109,7 @@
       reset("Reverse");
     }
 
-   
+
 
     function reset(method) {
       resetValues(method);
