@@ -13,7 +13,7 @@
   <link href="./styles/style.css" rel="stylesheet">
   <!-- <link rel="stylesheet" href="./styles/materialize.css">
   <script src="./libs/materialize.js"></script> -->
-      
+
 
 
 </head>
@@ -25,24 +25,26 @@
       Sorter Comparison
     </div>
     <div class="card">
-      <canvas id="canv0"></canvas>
-      <canvas id="canv1" width=0></canvas>
+      <div class="stack">
+        Starting Data
+      </div class="stack">
+      <div>
+      <button onclick="resetInOrder()">In Order <span class="iconify" data-icon="si-glyph:arrow-thin-right-top"
+          data-inline="false"></span></button>
+      <button onclick="resetRandom()">Random <span class="iconify" data-icon="fa-solid:random"
+          data-inline="false"></span></button>
+      <button onclick="resetReverse()">Reverse <span class="iconify" data-icon="si-glyph:arrow-thin-right-bottom"
+          data-inline="false"></span></button>
+        </div>
     </div>
     <div class="card">
-      <div class="stack">Comparisons: <span id="steps"></span></div>
-      <div class="stack">
-        Reset:
-        <button onclick="resetInOrder()">In Order <span class="iconify" data-icon="si-glyph:arrow-thin-right-top" data-inline="false"></span></button>
-        <button onclick="resetRandom()">Random <span class="iconify" data-icon="fa-solid:random" data-inline="false"></span></button>
-        <button onclick="resetReverse()">Reverse <span class="iconify" data-icon="si-glyph:arrow-thin-right-bottom" data-inline="false"></span></button>
+      <div>
+        <canvas id="canv0"></canvas>
+        <canvas id="canv1" width=0></canvas>
       </div>
-      <div class="stack">
-        Controls:
-        <button onclick="play()">Play <span class="iconify" data-icon="fa:play"></span></button>
-        <button onclick="pause()">Pause <span class="iconify" data-icon="fa:pause"></span></button>
-        <button onclick="step()">Step <span class="iconify" data-icon="fa:step-forward"></span></button>
-      </div>
-
+      <button onclick="play()">Play <span class="iconify" data-icon="fa:play"></span></button>
+      <button onclick="pause()">Pause <span class="iconify" data-icon="fa:pause"></span></button>
+      <button onclick="step()">Step <span class="iconify" data-icon="fa:step-forward"></span></button>
     </div>
   </div>
 
@@ -113,13 +115,10 @@
 
     function reset(method) {
       resetValues(method);
-      updateSteps();
       drawCanvases();
     }
 
-    function updateSteps() {
-      document.getElementById("steps").innerText = stepsCounters.join(",");
-    }
+    
 
     //Boot or reboot the sorter
     function resetValues(method) {
@@ -129,6 +128,8 @@
       compare2Values = [];
       dones = [];
       stepsCounters = [];
+
+      playing = false;
 
 
 
@@ -202,7 +203,7 @@
       }
       if (dones.some(x => x == false)) {
         timerID = setTimeout(tick, 0);
-        updateSteps();
+        
       }
       else
         drawCanvases();
@@ -382,6 +383,9 @@
         ctx.fillStyle = "rgba(0,0,0,.3)";
         let titleWidth = ctx.measureText(title).width;
         ctx.fillText(title, (scaled + margin + padding) / 2 - titleWidth / 2, (scaled + padding + margin) / 2);
+        let stepString = "" + stepsCounters[d];
+        let stepWidth = ctx.measureText(stepString).width;
+        ctx.fillText(stepString, (scaled + margin + padding) / 2 - stepWidth / 2, (scaled + padding + margin) / 2 + fontSize*3);
       }
     }
   </script>
