@@ -139,17 +139,13 @@
         let values = [];
         allValues.push(values);
         for (let i = 0; i < size; i++) {
-          //values[i] = 50 - i;
           if (method == "InOrder")
             values[i] = inOrder[i];
           if (method == "Random")
             values[i] = randomSequence[i];
           if (method == "Reverse")
             values[i] = reverseOrder[i];
-          //values[i] = randomSequence[i];
         }
-        //dones[d] = false;
-        //stepsCounters[d] = 0;
 
         //if (d == 0)
         //  sorters.push(new BubbleSlow(values))
@@ -198,46 +194,6 @@
       }
       else
         drawCanvases();
-    }
-
-
-
-    function* sort0(values) {
-      for (let i = 0; i < size; i++) {
-        for (let j = 0; j < size - 1; j++) {
-          //For visualization onle
-          compare1Values[0] = values[j];
-          compare2Values[0] = values[j + 1];
-          if (values[j + 1] < values[j]) {
-
-
-            //Actual Bubble Sort
-            let temp = values[j + 1];
-            values[j + 1] = values[j];
-            values[j] = temp;
-          }
-          yield [j, j + 1];
-        }
-      }
-    }
-
-    function* sort1(values) {
-      for (let i = 0; i < size; i++) {
-        for (let j = 0; j < size - 1 - i; j++) {
-          //For visualization onle
-          compare1Values[1] = values[j];
-          compare2Values[1] = values[j + 1];
-          if (values[j + 1] < values[j]) {
-
-
-            //Actual Bubble Sort
-            let temp = values[j + 1];
-            values[j + 1] = values[j];
-            values[j] = temp;
-          }
-          yield [j, j + 1];
-        }
-      }
     }
 
     function drawCanvases() {
@@ -346,30 +302,25 @@
           }
 
           //Now draw where we are comparing
-          if (compare1 != -1) {
-            //Draw the old values
+          for(let c = 0; c < sorter.state.length; c++){
+            let state = sorter.state[c];
+             //Draw the old values
             ctx.fillStyle = "rgba(255, 255, 255, .9)";
             ctx.strokeStyle = "white";
             ctx.beginPath();
-            ctx.ellipse(compare1 * scale, (compare1Value) * scale, scale / 2, scale / 2, 0, 0, Math.PI * 2);
+            ctx.ellipse(state.index * scale, (state.value) * scale, scale / 2, scale / 2, 0, 0, Math.PI * 2);
             ctx.fill();
             ctx.stroke();
 
-            ctx.beginPath()
-            ctx.ellipse(compare2 * scale, (compare2Value) * scale, scale / 2, scale / 2, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
+            
 
             //Draw the comparison indexes
             ctx.strokeStyle = "red";
             ctx.beginPath()
-            ctx.moveTo(compare1 * scale, 0);
-            ctx.lineTo(compare1 * scale, scaled);
+            ctx.moveTo(state.index * scale, 0);
+            ctx.lineTo(state.index * scale, scaled);
             ctx.stroke();
-            ctx.beginPath()
-            ctx.moveTo(compare2 * scale, 0);
-            ctx.lineTo(compare2 * scale, scaled);
-            ctx.stroke();
+            
           }
         }
         ctx.restore()

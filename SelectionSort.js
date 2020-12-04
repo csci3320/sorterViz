@@ -22,10 +22,10 @@ class SelectionSort{
         //For visualization only
         toReturn.push({value:this.values[i]});
         toReturn.push({value:this.values[j]});
-        //compare2Values[0] = this.values[j + 1];
-        
+        toReturn.push({value:smallestValue});
         toReturn[0].index = i;
         toReturn[1].index = j;
+        toReturn[2].index = smallestIndex;
         this.state = toReturn;
         yield toReturn;
       }
