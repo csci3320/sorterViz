@@ -53,15 +53,17 @@
     import BubbleSlow from "./BubbleSlow.js"
     import BubbleFast from "./BubbleFast.js"
     import SelectionSort from "./SelectionSort.js"
-    //let a = new BubbleSlow();
 
+    // Drawing constants
     const size = 51;
-    let scale = 8;
-    let scaled = size * scale;
-    let margin = 50;
-    let padding = 10;
-    let allValues = [];
+    const scale = 8;
+    const scaled = size * scale;
+    const margin = 50;
+    const padding = 10;
+    const tickStep = 5;
+    const  fontSize = margin / 4;
 
+    //The shared list values
     let randomSequence = [];
     let reverseOrder = [];
     let inOrder = [];
@@ -70,20 +72,17 @@
       reverseOrder[i] = size - i - 1;
       inOrder[i] = i;
     }
-
     randomSequence = _.shuffle(randomSequence);
 
-
-    let tickStep = 5;
-    let fontSize = margin / 4;
+    //Control state
     let playing = false;
     let stepping = false;
 
+    //Arrays to store the state of the simulation
     let sorterCount = 2;
     let sorters = [];
     let generators = [];
     let canvases = [];
-
 
     //Controls
     window.play = function () {
@@ -111,33 +110,20 @@
       reset("Reverse");
     }
 
-
-
     function reset(method) {
       resetValues(method);
       drawCanvases();
     }
 
-
-
     //Boot or reboot the sorter
     function resetValues(method) {
-
-      //dones = [];
-      //stepsCounters = [];
-
       playing = false;
 
-
-
-      allValues = [];
       sorters = [];
-
       generators = [];
       for (let d = 0; d < sorterCount; d++) {
 
         let values = [];
-        allValues.push(values);
         for (let i = 0; i < size; i++) {
           if (method == "InOrder")
             values[i] = inOrder[i];
@@ -159,8 +145,6 @@
       let steps = 0;
       let timerID = setTimeout(tick, 0);
     }
-
-
 
     window.main = function () {
       resetValues("Random");
@@ -200,19 +184,18 @@
       for (let d = 0; d < sorterCount; d++) {
         let canvas = canvases[d];
         let sorter = sorters[d];
-        //let values = allValues[d];
         let values = sorter.values;
         let compare1 = -1;
         let compare2 = -1;
         let compare1Value = -1;
         let compare2Value = -1;
         if (sorter.state.length > 0) {
-          compare1 = sorter.state[0].index;//compare1s[d];
+          compare1 = sorter.state[0].index;
           compare2 = sorter.state[1].index;
           compare1Value = sorter.state[0].value;
           compare2Value = sorter.state[1].value;
         }
-        let done = sorters[d].done//dones[d];
+        let done = sorters[d].done;
 
         var ctx = canvas.getContext("2d");
         ctx.font = fontSize + "px roboto";
@@ -312,8 +295,6 @@
             ctx.fill();
             ctx.stroke();
 
-            
-
             //Draw the comparison indexes
             ctx.strokeStyle = "red";
             ctx.beginPath()
@@ -324,9 +305,6 @@
           }
         }
         ctx.restore()
-
-
-
 
         let title = sorter.name//names[d];
         ctx.font = "50px Roboto";
