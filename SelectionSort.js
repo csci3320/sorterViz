@@ -1,4 +1,4 @@
-class BubbleFast{
+class SelectionSort{
   constructor(values){
     this.name = "Selection Sort";
     this.values = values;
@@ -13,9 +13,9 @@ class BubbleFast{
       let smallestIndex = i;
       for (let j = i+1; j < this.values.length; j++) {
         this.steps++;
-        if(this.values[j] > smallestValue){
-          this.smallestValue = this.values[j];
-          this.smallestIndex = i;
+        if(this.values[j] < smallestValue){
+          smallestValue = this.values[j];
+          smallestIndex = j;
         }
 
         let toReturn = []
@@ -37,4 +37,4 @@ class BubbleFast{
   }
 }
 
-export default BubbleFast;
+export default SelectionSort;

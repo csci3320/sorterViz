@@ -52,6 +52,7 @@
   <script type="module">
     import BubbleSlow from "./BubbleSlow.js"
     import BubbleFast from "./BubbleFast.js"
+    import SelectionSort from "./SelectionSort.js"
     //let a = new BubbleSlow();
 
     const size = 51;
@@ -150,12 +151,12 @@
         //dones[d] = false;
         //stepsCounters[d] = 0;
 
+        //if (d == 0)
+        //  sorters.push(new BubbleSlow(values))
         if (d == 0)
-          sorters.push(new BubbleSlow(values))
-        if (d == 1)
           sorters.push(new BubbleFast(values));
         if (d == 1)
-          sorters.push(new BubbleFast(values));
+          sorters.push(new SelectionSort(values));
 
         generators.push(sorters[d].sort());
       }
