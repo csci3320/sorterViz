@@ -53,6 +53,8 @@
     import BubbleSlow from "./BubbleSlow.js"
     import BubbleFast from "./BubbleFast.js"
     import SelectionSort from "./SelectionSort.js"
+    import InsertionSlow from "./InsertionSlow.js"
+    import InsertionFast from "./InsertionFast.js"
 
     // Drawing constants
     const size = 51;
@@ -83,6 +85,10 @@
     let sorters = [];
     let generators = [];
     let canvases = [];
+
+    let toUse = [];
+    //toUse.push(SelectionSort, InsertionSlow);
+    toUse.push(InsertionSlow, InsertionFast);
 
     //Controls
     window.play = function () {
@@ -135,10 +141,11 @@
 
         //if (d == 0)
         //  sorters.push(new BubbleSlow(values))
-        if (d == 0)
-          sorters.push(new BubbleFast(values));
-        if (d == 1)
-          sorters.push(new SelectionSort(values));
+        // if (d == 0)
+        //   sorters.push(new SelectionSort(values));
+        // if (d == 1)
+        //   sorters.push(new InsertionSort(values));
+        sorters.push(new toUse[d](values));
 
         generators.push(sorters[d].sort());
       }
