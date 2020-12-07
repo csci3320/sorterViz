@@ -10,6 +10,7 @@ class MergeSort {
     this.state.push({index:this.values.length-1, value:this.values[this.values.length-1]});
     this.toDos = [];
     this.toDos.push({ left: 0, right: values.length - 1, type: "recurse" })
+    this.toMerge = [];
   }
   * sort() {
     while (this.toDos.length > 0) {
@@ -19,14 +20,18 @@ class MergeSort {
           let center = Math.floor((toDo.left + toDo.right) / 2);
           let newToDoLeft = { left: toDo.left, right: center, type: "recurse" };
           let newToDoRight = { left: center + 1, right: toDo.right, type: "recurse" }
-          this.toDos.unshift({ left: toDo.left, center: center + 1, right: toDo.right, type: "merge" });
+          this.toMerge.unshift({ left: toDo.left, center: center + 1, right: toDo.right, type: "merge" })
           this.toDos.unshift(newToDoRight);
           this.toDos.unshift(newToDoLeft);
           this.steps++;
           yield;
         }
       }
-      else if (toDo.type == "merge") {
+    }
+    this.toMerge = this.toMerge.sort((a,b)=>(a.right-a.left) - (b.right - b.left));
+    while(this.toMerge.length > 0){
+      let toDo = this.toMerge.shift();
+      if (toDo.type == "merge") {
         let tempArray = new Array(this.values.length).fill(0);
         let leftStart = toDo.left;
         let leftPos = toDo.left;

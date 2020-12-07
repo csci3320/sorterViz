@@ -63,7 +63,7 @@
 
     // Drawing constants
     const size = 201;
-    const scale = 2;
+    const scale = 400/size;
     const scaled = size * scale;
     const margin = 50;
     const padding = 10;
@@ -86,7 +86,6 @@
     let stepping = false;
 
     //Arrays to store the state of the simulation
-    let sorterCount = 4;
     let sorters = [];
     let generators = [];
     let canvases = [];
@@ -96,6 +95,7 @@
     //toUse.push(SelectionSort, InsertionSlow);
     //toUse.push(InsertionSlow, InsertionFast);
     toUse.push(BubbleFast, SelectionSort, InsertionFast, MergeSort);
+    //toUse.push(MergeSort);
 
     //Controls
     window.play = function () {
@@ -134,7 +134,7 @@
 
       sorters = [];
       generators = [];
-      for (let d = 0; d < sorterCount; d++) {
+      for (let d = 0; d < toUse.length; d++) {
 
         let values = [];
         for (let i = 0; i < size; i++) {
@@ -146,12 +146,7 @@
             values[i] = reverseOrder[i];
         }
 
-        //if (d == 0)
-        //  sorters.push(new BubbleSlow(values))
-        // if (d == 0)
-        //   sorters.push(new SelectionSort(values));
-        // if (d == 1)
-        //   sorters.push(new InsertionSort(values));
+        
         sorters.push(new toUse[d](values));
 
         generators.push(sorters[d].sort());
@@ -162,7 +157,7 @@
 
     window.main = function () {
       resetValues("Random");
-      for (let i = 0; i < sorterCount; i++) {
+      for (let i = 0; i < toUse.length; i++) {
         canvases[i] = document.getElementById("canv" + i);
         canvases[i].style.width = scaled + margin + padding + "px"
         canvases[i].style.height = scaled + margin + padding + "px"
@@ -179,7 +174,7 @@
         stepping = false;
       }
 
-      for (let d = 0; d < sorterCount; d++) {
+      for (let d = 0; d < toUse.length; d++) {
         let result = generators[d].next();
       }
       let cont = false;
@@ -195,7 +190,7 @@
     }
 
     function drawCanvases() {
-      for (let d = 0; d < sorterCount; d++) {
+      for (let d = 0; d < toUse.length; d++) {
         let canvas = canvases[d];
         let sorter = sorters[d];
         let values = sorter.values;
