@@ -42,6 +42,10 @@
         <canvas id="canv0"></canvas>
         <canvas id="canv1" width=0></canvas>
       </div>
+      <div>
+        <canvas id="canv2" width=0></canvas>
+        <canvas id="canv3" width=0></canvas>
+      </div>
       <button onclick="play()">Play <span class="iconify" data-icon="fa:play"></span></button>
       <button onclick="pause()">Pause <span class="iconify" data-icon="fa:pause"></span></button>
       <button onclick="step()">Step <span class="iconify" data-icon="fa:step-forward"></span></button>
@@ -55,15 +59,16 @@
     import SelectionSort from "./SelectionSort.js"
     import InsertionSlow from "./InsertionSlow.js"
     import InsertionFast from "./InsertionFast.js"
+    import MergeSort from "./MergeSort.js"
 
     // Drawing constants
-    const size = 51;
-    const scale = 8;
+    const size = 201;
+    const scale = 2;
     const scaled = size * scale;
     const margin = 50;
     const padding = 10;
     const tickStep = 5;
-    const  fontSize = margin / 4;
+    const fontSize = margin / 4;
 
     //The shared list values
     let randomSequence = [];
@@ -81,14 +86,16 @@
     let stepping = false;
 
     //Arrays to store the state of the simulation
-    let sorterCount = 2;
+    let sorterCount = 4;
     let sorters = [];
     let generators = [];
     let canvases = [];
 
     let toUse = [];
+    //toUse.push(BubbleFast, SelectionSort);
     //toUse.push(SelectionSort, InsertionSlow);
-    toUse.push(InsertionSlow, InsertionFast);
+    //toUse.push(InsertionSlow, InsertionFast);
+    toUse.push(BubbleFast, SelectionSort, InsertionFast, MergeSort);
 
     //Controls
     window.play = function () {
@@ -292,15 +299,18 @@
           }
 
           //Now draw where we are comparing
-          for(let c = 0; c < sorter.state.length; c++){
+          for (let c = 0; c < sorter.state.length; c++) {
             let state = sorter.state[c];
-             //Draw the old values
-            ctx.fillStyle = "rgba(255, 255, 255, .9)";
-            ctx.strokeStyle = "white";
-            ctx.beginPath();
-            ctx.ellipse(state.index * scale, (state.value) * scale, scale / 2, scale / 2, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
+
+            //Draw the old values
+            if (state.value >= 0) {
+              ctx.fillStyle = "rgba(255, 255, 255, .9)";
+              ctx.strokeStyle = "white";
+              ctx.beginPath();
+              ctx.ellipse(state.index * scale, (state.value) * scale, scale / 2, scale / 2, 0, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.stroke();
+            }
 
             //Draw the comparison indexes
             ctx.strokeStyle = "red";
@@ -308,7 +318,7 @@
             ctx.moveTo(state.index * scale, 0);
             ctx.lineTo(state.index * scale, scaled);
             ctx.stroke();
-            
+
           }
         }
         ctx.restore()
