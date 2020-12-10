@@ -11,8 +11,6 @@
   <script src="./libs/lodash.js"></script>
   <link href="./styles/fonts.css" rel="stylesheet">
   <link href="./styles/style.css" rel="stylesheet">
-  <!-- <link rel="stylesheet" href="./styles/materialize.css">
-  <script src="./libs/materialize.js"></script> -->
 
 
 
@@ -60,9 +58,10 @@
     import InsertionSlow from "./InsertionSlow.js"
     import InsertionFast from "./InsertionFast.js"
     import MergeSort from "./MergeSort.js"
+    import Quicksort from "./Quicksort.js"
 
     // Drawing constants
-    const size = 201;
+    const size = 128;
     const scale = 400/size;
     const scaled = size * scale;
     const margin = 50;
@@ -94,8 +93,10 @@
     //toUse.push(BubbleFast, SelectionSort);
     //toUse.push(SelectionSort, InsertionSlow);
     //toUse.push(InsertionSlow, InsertionFast);
-    toUse.push(BubbleFast, SelectionSort, InsertionFast, MergeSort);
+    //toUse.push(BubbleFast, SelectionSort, InsertionFast, MergeSort);
     //toUse.push(MergeSort);
+    //toUse.push(Quicksort);
+    toUse.push(SelectionSort, InsertionFast, MergeSort, Quicksort);
 
     //Controls
     window.play = function () {

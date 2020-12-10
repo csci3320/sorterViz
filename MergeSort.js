@@ -11,6 +11,7 @@ class MergeSort {
     this.toDos = [];
     this.toDos.push({ left: 0, right: values.length - 1, type: "recurse" })
     this.toMerge = [];
+    //this.tempArray = Arrays.fill()
   }
   * sort() {
     while (this.toDos.length > 0) {
@@ -51,21 +52,21 @@ class MergeSort {
           else {
             tempArray[tempPos++] = this.values[rightPos++];
           }
-          this.state[0].index = tempPos;
+          this.state[0].index = Math.min(tempPos, rightEnd);
           this.state[0].value = tempArray[tempPos-1];
           this.steps++;
           yield;
         }
         while (leftPos <= leftEnd) {
           tempArray[tempPos++] = this.values[leftPos++];
-          this.state[0].index = tempPos;
+          this.state[0].index = Math.min(tempPos, rightEnd);
           this.state[0].value = tempArray[tempPos-1];
           this.steps++;
           yield
         }
         while (rightPos <= rightEnd) {
           tempArray[tempPos++] = this.values[rightPos++];
-          this.state[0].index = tempPos;
+          this.state[0].index = Math.min(tempPos, rightEnd);
           this.state[0].value = tempArray[tempPos-1];
           this.steps++;
           yield
