@@ -61,8 +61,23 @@
     import MergeSort from "./MergeSort.js"
     import Quicksort from "./Quicksort.js"
 
+    //Parse date from URL
+    // See https://stackoverflow.com/a/901144/10047920
+    const urlParams = new URLSearchParams(window.location.search);
+    const sizeParam = urlParams.get('size');
+    const algorithms = urlParams.get('algorithms');
+    const algorithmMap = {
+      BubbleSlow,
+      BubbleFast,
+      SelectionSort,
+      InsertionSlow,
+      InsertionFast,
+      MergeSort,
+      Quicksort
+    };
+
     // Drawing constants
-    const size = 64;
+    const size = sizeParam || 64;
     const scale = 400 / size;
     const scaled = size * scale;
     const margin = 50;
@@ -91,14 +106,24 @@
     let canvases = [];
 
     let toUse = [];
-    //toUse.push(BubbleFast, SelectionSort);
-    //toUse.push(SelectionSort, InsertionSlow);
-    //toUse.push(InsertionSlow, InsertionFast);
-    //toUse.push(BubbleFast, SelectionSort, InsertionFast, MergeSort);
-    //toUse.push(MergeSort);
-    //toUse.push(Quicksort);
-    //toUse.push(BubbleSlow);
-    toUse.push(SelectionSort, InsertionFast, MergeSort, Quicksort);
+    //Use what is in the parameters, or what is hard coded below
+    if (algorithms) {
+      const algorithmNames = algorithms.split("|");
+      for(let name of algorithmNames){
+        toUse.push(algorithmMap[name]);
+      }
+
+    }
+    else {
+      //toUse.push(BubbleFast, SelectionSort);
+      //toUse.push(SelectionSort, InsertionSlow);
+      //toUse.push(InsertionSlow, InsertionFast);
+      //toUse.push(BubbleFast, SelectionSort, InsertionFast, MergeSort);
+      //toUse.push(MergeSort);
+      //toUse.push(Quicksort);
+      //toUse.push(BubbleSlow);
+      toUse.push(SelectionSort, InsertionFast, MergeSort, Quicksort);
+    }
 
     //Add/Remove canvases as needed
     let canvasContainer = document.querySelector("#canvasContainer");
