@@ -7,7 +7,7 @@
   <style>
 
   </style>
-  <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+  <script src="./libs/iconify.min.js"></script>
   <script src="./libs/lodash.js"></script>
   <link href="./styles/fonts.css" rel="stylesheet">
   <link href="./styles/style.css" rel="stylesheet">
@@ -34,16 +34,17 @@
         <button onclick="resetReverse()">Reverse <span class="iconify" data-icon="si-glyph:arrow-thin-right-bottom"
             data-inline="false"></span></button>
       </div>
-    </div>
-    <div class="card">
-      <div>
-        <canvas id="canv0"></canvas>
-        <canvas id="canv1" width=0></canvas>
+      <div id="canvasContainer">
+        <!-- <div>
+          <canvas id="canv0"></canvas>
+          <canvas id="canv1" width=0 height=0></canvas>
+        </div>
+        <div>
+          <canvas id="canv2" width=0 height=0></canvas>
+          <canvas id="canv3" width=0 height=0></canvas>
+        </div> -->
       </div>
-      <div>
-        <canvas id="canv2" width=0></canvas>
-        <canvas id="canv3" width=0></canvas>
-      </div>
+
       <button onclick="play()">Play <span class="iconify" data-icon="fa:play"></span></button>
       <button onclick="pause()">Pause <span class="iconify" data-icon="fa:pause"></span></button>
       <button onclick="step()">Step <span class="iconify" data-icon="fa:step-forward"></span></button>
@@ -61,8 +62,8 @@
     import Quicksort from "./Quicksort.js"
 
     // Drawing constants
-    const size = 128;
-    const scale = 400/size;
+    const size = 64;
+    const scale = 400 / size;
     const scaled = size * scale;
     const margin = 50;
     const padding = 10;
@@ -96,33 +97,37 @@
     //toUse.push(BubbleFast, SelectionSort, InsertionFast, MergeSort);
     //toUse.push(MergeSort);
     //toUse.push(Quicksort);
+    //toUse.push(BubbleSlow);
     toUse.push(SelectionSort, InsertionFast, MergeSort, Quicksort);
 
+    //Add/Remove canvases as needed
+    let canvasContainer = document.querySelector("#canvasContainer");
+    let parentDiv = null;
+    for (let i = 0; i < toUse.length; i++) {
+      if (i % 2 == 0) {
+        let div = document.createElement("div");
+        parentDiv = div;
+        canvasContainer.appendChild(div);
+      }
+      let canvas = document.createElement("canvas");
+      canvas.id = "canv" + i;
+      parentDiv.appendChild(canvas);
+    }
+
+
     //Controls
-    window.play = function () {
-      playing = true;
-    }
+    window.play = () => playing = true;
 
-    window.pause = function () {
-      playing = false;
-    }
+    window.pause = () => playing = false;
 
-    window.step = function () {
-      playing = true;
-      stepping = true;
-    }
+    window.step = () => { playing = true; stepping = true; }
 
-    window.resetInOrder = function () {
-      reset("InOrder");
-    }
+    window.resetInOrder = () => reset("InOrder");
 
-    window.resetRandom = function () {
-      reset("Random");
-    }
+    window.resetRandom = () => reset("Random");
 
-    window.resetReverse = function () {
-      reset("Reverse");
-    }
+    window.resetReverse = () => reset("Reverse");
+
 
     function reset(method) {
       resetValues(method);
@@ -147,7 +152,7 @@
             values[i] = reverseOrder[i];
         }
 
-        
+
         sorters.push(new toUse[d](values));
 
         generators.push(sorters[d].sort());
